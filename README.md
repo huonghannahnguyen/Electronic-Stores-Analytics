@@ -302,5 +302,29 @@
     ON sales.product_key = products.product_key
     ORDER BY stores.country;
 
+-- Average time to deliver by year
+
+    SELECT DISTINCT EXTRACT (year from order_date) AS year,
+			     ROUND(AVG(delivery_date - order_date) 
+			     OVER(PARTITION BY EXTRACT(year from order_date)),3) AS average_delivery_days
+    FROM sales
+    WHERE delivery_date IS NOT NULL
+    ORDER BY year;
+
+-- Volumn order over years
+
+    SELECT DISTINCT order_date, SUM(quantity) OVER (ORDER BY order_date) AS quantity
+    FROM sales
+    ORDER BY order_date;
+
+-- Volumn order over days by year
+
+    SELECT DISTINCT order_date, SUM(quantity)OVER(PARTITION BY EXTRACT(year from order_date)
+						  ORDER BY order_date) AS quantity
+    FROM sales
+    ORDER BY order_date;
+
+
+					
 
 					
