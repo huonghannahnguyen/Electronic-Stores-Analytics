@@ -1,7 +1,6 @@
 # electronic_stores_analytics
 -- Create tables for customers, sales, products, stores and exchange rate to upload data into PostgreSQL
--- Link to dataset: [
-](https://www.kaggle.com/datasets/bhavikjikadara/global-electronics-retailers)
+-- Link to dataset: https://www.kaggle.com/datasets/bhavikjikadara/global-electronics-retailers
 -- Creat Customers Table
 
     CREATE TABLE customers (customer_key integer, gender text,
