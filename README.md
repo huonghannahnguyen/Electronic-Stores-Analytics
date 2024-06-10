@@ -3,6 +3,8 @@
 
 -- Link to dataset: https://www.kaggle.com/datasets/bhavikjikadara/global-electronics-retailers
 
+-- Tableau - Electronic Stores Analytics Visualization: https://public.tableau.com/app/profile/huong6399/viz/GlobalElectronicStores/Overall
+
 -- Creat Customers Table
 
     CREATE TABLE customers (customer_key integer, gender text,
