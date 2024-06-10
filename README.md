@@ -5,7 +5,7 @@
 
 -- Tableau - Electronic Stores Analytics Visualization: https://public.tableau.com/app/profile/huong6399/viz/GlobalElectronicStores/Overall
 
--- PostgreSQL Queries:
+---- PostgreSQL Queries:
 
  -- Creat Customers Table
 
@@ -50,7 +50,8 @@
 
     SELECT * FROM exchange_rates;
 
- -- SQL queries for stores, sales and products analytics:
+---- SQL queries for stores, sales and products analytics:
+
  -- Number of stores by country
 
     SELECT country, COUNT(*) AS number_of_stores
