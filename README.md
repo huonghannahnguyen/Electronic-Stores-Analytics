@@ -5,7 +5,9 @@
 
 -- Tableau - Electronic Stores Analytics Visualization: https://public.tableau.com/app/profile/huong6399/viz/GlobalElectronicStores/Overall
 
--- Creat Customers Table
+-- PostgreSQL Queries:
+
+ -- Creat Customers Table
 
     CREATE TABLE customers (customer_key integer, gender text,
 					   name text, city text, state_code text,
@@ -14,7 +16,7 @@
 
     SELECT * FROM customers;
 
--- Create Sales Table
+ -- Create Sales Table
 
     CREATE TABLE sales (order_number integer, line_item integer, 
 				   order_date date, delivery_date date, 
@@ -24,7 +26,7 @@
 
     SELECT * FROM sales;
     
--- Create Products Table
+ -- Create Products Table
 
     CREATE TABLE products (product_key integer, product_name varchar,
 					  brand text, color text, unit_cost_USD money,
@@ -34,29 +36,29 @@
 
     SELECT * FROM products;
     
--- Create Sales Table
+ -- Create Sales Table
 
     CREATE TABLE stores (store_key integer, country text, state text,
 					square_meters integer, open_date date);
 
     SELECT * FROM stores;
     
--- Create Exchange_rates Table
+ -- Create Exchange_rates Table
 
     CREATE TABLE exchange_rates (date date, currency text,
 							exchange decimal);
 
     SELECT * FROM exchange_rates;
 
--- SQL queries for stores, sales and products analytics:
--- Number of stores by country
+ -- SQL queries for stores, sales and products analytics:
+ -- Number of stores by country
 
     SELECT country, COUNT(*) AS number_of_stores
     FROM stores
     GROUP BY country
     ORDER BY COUNT(*) DESC;
 
--- Average square meter by country
+ -- Average square meter by country
 
     SELECT country, 
 	      ROUND(AVG(square_meters),3) AS average_square_meters
@@ -64,7 +66,7 @@
     GROUP BY country
     ORDER BY AVG(square_meters) DESC;
 
--- Profit by product
+ -- Profit by product
 
     SELECT products.product_key, products.product_name, 
 	      SUM(sales.quantity * products.unit_price_USD) AS total_sales,
@@ -77,7 +79,7 @@
         products.category
     ORDER BY total_profit DESC;
 
--- Profit by store
+ -- Profit by store
 
     WITH product_sale_table AS (
 	    SELECT sales.order_number, sales.customer_key, sales.store_key, sales.quantity,
@@ -107,7 +109,7 @@
     ON stores.store_key = store_profit_table.store_key
     ORDER BY store_profit_table.total_profit DESC;
 
--- Profit by brand
+ -- Profit by brand
 
     SELECT products.brand,
 	      SUM((products.unit_price_usd - products.unit_cost_usd) * sales.quantity) AS profit
@@ -117,7 +119,7 @@
     GROUP BY products.brand
     ORDER BY profit DESC;
 
--- Brand sales rank	
+ -- Brand sales rank	
 
     SELECT products.brand, RANK()OVER(ORDER BY SUM(products.unit_price_usd * sales.quantity) DESC)
     FROM products
@@ -125,7 +127,7 @@
     ON products.product_key = sales.product_key
     GROUP BY products.brand
 
--- Profit by subcategory
+ -- Profit by subcategory
 
     SELECT products.subcategory,
 	      SUM((products.unit_price_usd - products.unit_cost_usd) * sales.quantity) AS profit
@@ -135,7 +137,7 @@
     GROUP BY products.subcategory
     ORDER BY profit DESC;
 
--- Profit by category
+ -- Profit by category
 
     SELECT products.category,
 	      SUM((products.unit_price_usd - products.unit_cost_usd) * sales.quantity) AS profit
@@ -145,7 +147,7 @@
     GROUP BY products.category
     ORDER BY profit DESC;
 
--- Sales by country
+ -- Sales by country
 
     SELECT customers.country, SUM(products.unit_price_usd * sales.quantity) AS sales,
 	      ROUND( 100.0 * (SUM(products.unit_price_usd * sales.quantity)/ 
@@ -161,7 +163,7 @@
     GROUP BY customers.country
     ORDER BY sales DESC;
 
--- Average of transaction that buy more than 2 products
+ -- Average of transaction that buy more than 2 products
 
     WITH quantity_table AS (
 	      SELECT  order_number, SUM(quantity) AS total_quantity
@@ -172,7 +174,7 @@
     FROM quantity_table
     WHERE total_quantity > 1;
 
--- Aggregated sales
+ -- Aggregated sales
 
     SELECT DISTINCT sales.order_date, 
 	    SUM(sales.quantity*products.unit_price_usd) OVER (ORDER BY sales.order_date) AS sales
@@ -180,7 +182,7 @@
     INNER JOIN products
     ON sales.product_key = products.product_key;
 
--- Top 100 customers who spent the most
+ -- Top 100 customers who spent the most
 
     SELECT customers.name, customers.country, SUM(sales.quantity) AS quantity_bought, 
 	      SUM(sales.quantity * products.unit_price_usd) AS total_amount
@@ -193,13 +195,13 @@
     ORDER BY total_amount DESC
     LIMIT 100;
 
--- Average time to deliver
+ -- Average time to deliver
 
     SELECT ROUND(AVG(delivery_date - order_date)::DECIMAL,3) AS average_day
     FROM sales
     WHERE delivery_date IS NOT NULL;
 
--- Average quantities of products bought per order
+ -- Average quantities of products bought per order
 
     WITH quantity_table AS (
 	      SELECT order_number, SUM(quantity) AS total_quantity
@@ -209,7 +211,7 @@
     SELECT FLOOR(AVG(total_quantity)) AS average_quantity_per_order
     FROM quantity_table;
 
--- Popular sales colors
+ -- Popular sales colors
 
     SELECT DISTINCT products.color, SUM(sales.quantity) OVER (PARTITION BY products.color) AS quantity
     FROM sales
@@ -217,14 +219,14 @@
     ON sales.product_key = products.product_key
     ORDER BY quantity DESC;
 
--- Number of products offered by brand
+ -- Number of products offered by brand
 
     SELECT DISTINCT brand, COUNT(product_key) AS number_of_products
     FROM products
     GROUP BY brand
     ORDER BY number_of_products DESC;
 
--- Returned customers
+ -- Returned customers
 
     WITH customers_return AS(
 	      SELECT customers.name, sales.order_date, customers.country,
@@ -238,25 +240,25 @@
 	  AS return_customers_percentage
     FROM customers_return;
 
--- Males Vs Females
+ -- Males Vs Females
 
     SELECT ROUND(100.0* COUNT(gender) FILTER(WHERE LOWER(gender) = 'male')/COUNT(*),3) AS male_percentage,
 	       ROUND(100.0* COUNT(gender) FILTER(WHERE LOWER(gender) = 'female')/COUNT(*),3) AS female_percentage
     FROM customers;
 
--- Customers by country
+ -- Customers by country
 
     SELECT country, COUNT(customer_key) AS number_of_customers
     FROM customers
     GROUP BY country
     ORDER BY number_of_customers DESC;
 
--- Average Age
+ -- Average Age
 
     SELECT ROUND(AVG(EXTRACT(year FROM NOW()) - EXTRACT(year FROM birthday))) AS average_age
     FROM customers;
 
--- Age proportion
+ -- Age proportion
 
     WITH age_table AS(
 	      SELECT EXTRACT(year FROM NOW()) - EXTRACT (year FROM birthday) AS age
@@ -269,7 +271,7 @@
 	    ROUND(100.0*COUNT(age) FILTER (WHERE age > 80)::DECIMAL/ COUNT(*)) AS "80-100"
     FROM age_table;
 
--- Age proportion
+ -- Age proportion
 
     WITH age_table AS(
 	      SELECT name, EXTRACT(year FROM NOW()) - EXTRACT (year FROM birthday) AS age
@@ -293,7 +295,7 @@
     SELECT age_range, ROUND(100.0* count/(SELECT SUM(count) FROM count_range_table)) AS percentage
     FROM count_range_table;
 
--- Aggregated sales by country
+ -- Aggregated sales by country
 
     SELECT DISTINCT sales.order_date, stores.country, 
         SUM(sales.quantity * products.unit_price_usd)OVER(ORDER BY sales.order_date)
@@ -304,7 +306,7 @@
     ON sales.product_key = products.product_key
     ORDER BY stores.country;
 
--- Average time to deliver by year
+ -- Average time to deliver by year
 
     SELECT DISTINCT EXTRACT (year from order_date) AS year,
 			     ROUND(AVG(delivery_date - order_date) 
@@ -313,13 +315,13 @@
     WHERE delivery_date IS NOT NULL
     ORDER BY year;
 
--- Volumn order over years
+ -- Volumn order over years
 
     SELECT DISTINCT order_date, SUM(quantity) OVER (ORDER BY order_date) AS quantity
     FROM sales
     ORDER BY order_date;
 
--- Volumn order over days by year
+ -- Volumn order over days by year
 
     SELECT DISTINCT order_date, SUM(quantity)OVER(PARTITION BY EXTRACT(year from order_date)
 						  ORDER BY order_date) AS quantity
