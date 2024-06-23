@@ -1,4 +1,4 @@
-# electronic_stores_analytics
+# Electronic_stores_analytics
 -- Create tables for customers, sales, products, stores and exchange rate to upload data into PostgreSQL
 
 -- Link to dataset: https://www.kaggle.com/datasets/bhavikjikadara/global-electronics-retailers
