@@ -5,6 +5,8 @@
 
 -- Tableau - Electronic Stores Analytics Visualization: https://public.tableau.com/app/profile/huong6399/viz/GlobalElectronicStores/Overall
 
+![image](https://github.com/user-attachments/assets/fffac77b-1b1a-499e-92d3-e9e4e3d44ea0)
+
 ---- PostgreSQL Queries:
 
  -- Creat Customers Table
@@ -16,6 +18,8 @@
 
     SELECT * FROM customers;
 
+![image](https://github.com/user-attachments/assets/b9627e5e-acde-4f12-a9b0-53c945206a03)
+
  -- Create Sales Table
 
     CREATE TABLE sales (order_number integer, line_item integer, 
@@ -25,7 +29,9 @@
 				   currency_code text);
 
     SELECT * FROM sales;
-    
+
+![image](https://github.com/user-attachments/assets/8aeede57-648a-4e9c-85e3-b90e1d2e6d28)
+
  -- Create Products Table
 
     CREATE TABLE products (product_key integer, product_name varchar,
@@ -35,14 +41,18 @@
 					  category text);
 
     SELECT * FROM products;
-    
- -- Create Sales Table
+
+![image](https://github.com/user-attachments/assets/60604372-2961-4d49-8bb6-bb1cd1ed7564)
+
+ -- Create Stores Table
 
     CREATE TABLE stores (store_key integer, country text, state text,
 					square_meters integer, open_date date);
 
     SELECT * FROM stores;
-    
+
+![image](https://github.com/user-attachments/assets/4e51400c-e43f-49fa-b988-500385897238)
+
  -- Create Exchange_rates Table
 
     CREATE TABLE exchange_rates (date date, currency text,
@@ -59,6 +69,8 @@
     GROUP BY country
     ORDER BY COUNT(*) DESC;
 
+![image](https://github.com/user-attachments/assets/37681a43-6a55-4e3d-98a1-f3cb0d31d85a)
+
  -- Average square meter by country
 
     SELECT country, 
@@ -66,6 +78,8 @@
     FROM stores
     GROUP BY country
     ORDER BY AVG(square_meters) DESC;
+
+![image](https://github.com/user-attachments/assets/73366374-e01f-409c-be0d-dc1323772ca9)
 
  -- Profit by product
 
@@ -79,6 +93,8 @@
     GROUP BY products.product_key, products.product_name, products.brand, products.subcategory,
         products.category
     ORDER BY total_profit DESC;
+
+![image](https://github.com/user-attachments/assets/19392b34-7ca2-4461-b2b5-6186dd53e4b6)
 
  -- Profit by store
 
@@ -110,6 +126,8 @@
     ON stores.store_key = store_profit_table.store_key
     ORDER BY store_profit_table.total_profit DESC;
 
+![image](https://github.com/user-attachments/assets/579bf805-2fbc-4ef1-b7c2-b0c92f163089)
+
  -- Profit by brand
 
     SELECT products.brand,
@@ -120,6 +138,8 @@
     GROUP BY products.brand
     ORDER BY profit DESC;
 
+![image](https://github.com/user-attachments/assets/d7aced22-e3f5-4a9c-9edf-625fe2ab1d6a)
+
  -- Brand sales rank	
 
     SELECT products.brand, RANK()OVER(ORDER BY SUM(products.unit_price_usd * sales.quantity) DESC)
@@ -127,6 +147,8 @@
     LEFT JOIN sales
     ON products.product_key = sales.product_key
     GROUP BY products.brand
+
+![image](https://github.com/user-attachments/assets/3d346421-e448-4e0d-94d8-e4dd9d25f099)
 
  -- Profit by subcategory
 
@@ -138,6 +160,8 @@
     GROUP BY products.subcategory
     ORDER BY profit DESC;
 
+![image](https://github.com/user-attachments/assets/e4c57685-9a00-4b39-b598-941059bf3c9f)
+
  -- Profit by category
 
     SELECT products.category,
@@ -147,6 +171,8 @@
     ON products.product_key = sales.product_key
     GROUP BY products.category
     ORDER BY profit DESC;
+
+![image](https://github.com/user-attachments/assets/118432d7-8c87-435f-b26c-a1b84f4465ad)
 
  -- Sales by country
 
@@ -164,6 +190,8 @@
     GROUP BY customers.country
     ORDER BY sales DESC;
 
+![image](https://github.com/user-attachments/assets/c7537f7c-9d94-4da2-8408-b8e8b5dcf976)
+
  -- Average of transaction that buy more than 2 products
 
     WITH quantity_table AS (
@@ -175,6 +203,8 @@
     FROM quantity_table
     WHERE total_quantity > 1;
 
+![image](https://github.com/user-attachments/assets/11253dca-f6f5-41d7-81c9-43e1048faf89)
+
  -- Aggregated sales
 
     SELECT DISTINCT sales.order_date, 
@@ -182,6 +212,8 @@
     FROM sales
     INNER JOIN products
     ON sales.product_key = products.product_key;
+
+![image](https://github.com/user-attachments/assets/5889e4d0-9062-4f0e-a882-97d23e5cf81b)
 
  -- Top 100 customers who spent the most
 
@@ -196,11 +228,15 @@
     ORDER BY total_amount DESC
     LIMIT 100;
 
+![image](https://github.com/user-attachments/assets/344d738c-35ec-4573-b1dd-a99d1a620674)
+
  -- Average time to deliver
 
     SELECT ROUND(AVG(delivery_date - order_date)::DECIMAL,3) AS average_day
     FROM sales
     WHERE delivery_date IS NOT NULL;
+
+![image](https://github.com/user-attachments/assets/9f7e1565-4789-4ff0-b718-85755e3db000)
 
  -- Average quantities of products bought per order
 
@@ -212,6 +248,8 @@
     SELECT FLOOR(AVG(total_quantity)) AS average_quantity_per_order
     FROM quantity_table;
 
+![image](https://github.com/user-attachments/assets/956f6b45-cdbe-468e-81b4-bfcf23066840)
+
  -- Popular sales colors
 
     SELECT DISTINCT products.color, SUM(sales.quantity) OVER (PARTITION BY products.color) AS quantity
@@ -220,12 +258,16 @@
     ON sales.product_key = products.product_key
     ORDER BY quantity DESC;
 
+![image](https://github.com/user-attachments/assets/dd36a45b-b7ea-40b2-a1f4-8d4e47dd3fae)
+
  -- Number of products offered by brand
 
     SELECT DISTINCT brand, COUNT(product_key) AS number_of_products
     FROM products
     GROUP BY brand
     ORDER BY number_of_products DESC;
+
+![image](https://github.com/user-attachments/assets/c380928d-2394-4f0f-8e71-4aeb6a663d41)
 
  -- Returned customers
 
@@ -241,11 +283,15 @@
 	  AS return_customers_percentage
     FROM customers_return;
 
+![image](https://github.com/user-attachments/assets/1b8a58f2-98c2-49ba-a8f4-e6d6763537aa)
+
  -- Males Vs Females
 
     SELECT ROUND(100.0* COUNT(gender) FILTER(WHERE LOWER(gender) = 'male')/COUNT(*),3) AS male_percentage,
 	       ROUND(100.0* COUNT(gender) FILTER(WHERE LOWER(gender) = 'female')/COUNT(*),3) AS female_percentage
     FROM customers;
+
+![image](https://github.com/user-attachments/assets/e298f7f7-5002-48f2-90aa-2a251667b95a)
 
  -- Customers by country
 
@@ -254,10 +300,14 @@
     GROUP BY country
     ORDER BY number_of_customers DESC;
 
+![image](https://github.com/user-attachments/assets/6393cfd2-486f-49a9-b9b3-a27e8d9adc31)
+
  -- Average Age
 
     SELECT ROUND(AVG(EXTRACT(year FROM NOW()) - EXTRACT(year FROM birthday))) AS average_age
     FROM customers;
+
+![image](https://github.com/user-attachments/assets/d29aafa5-4040-466a-a7b4-5cb50e7ee4d2)
 
  -- Age proportion
 
@@ -271,6 +321,8 @@
 	    ROUND(100.0*COUNT(age) FILTER (WHERE age > 60 AND age <= 80)::DECIMAL/ COUNT(*)) AS "60-80",
 	    ROUND(100.0*COUNT(age) FILTER (WHERE age > 80)::DECIMAL/ COUNT(*)) AS "80-100"
     FROM age_table;
+
+![image](https://github.com/user-attachments/assets/0547652f-b4a9-40a0-9474-9c708a6056fd)
 
  -- Age proportion
 
@@ -296,6 +348,8 @@
     SELECT age_range, ROUND(100.0* count/(SELECT SUM(count) FROM count_range_table)) AS percentage
     FROM count_range_table;
 
+![image](https://github.com/user-attachments/assets/03a931fa-856f-40b4-87a1-0b08156f86c9)
+
  -- Aggregated sales by country
 
     SELECT DISTINCT sales.order_date, stores.country, 
@@ -307,6 +361,8 @@
     ON sales.product_key = products.product_key
     ORDER BY stores.country;
 
+![image](https://github.com/user-attachments/assets/de5bc995-52c5-413e-9613-825c8fe36d16)
+
  -- Average time to deliver by year
 
     SELECT DISTINCT EXTRACT (year from order_date) AS year,
@@ -316,11 +372,15 @@
     WHERE delivery_date IS NOT NULL
     ORDER BY year;
 
+![image](https://github.com/user-attachments/assets/ba26bd3f-d8be-4535-bd98-b56ee1be7f4f)
+
  -- Volumn order over years
 
     SELECT DISTINCT order_date, SUM(quantity) OVER (ORDER BY order_date) AS quantity
     FROM sales
     ORDER BY order_date;
+
+![image](https://github.com/user-attachments/assets/a3ab9a31-765d-4ab0-99b2-1034d54513fa)
 
  -- Volumn order over days by year
 
@@ -329,7 +389,7 @@
     FROM sales
     ORDER BY order_date;
 
-
+![image](https://github.com/user-attachments/assets/824d379c-5903-4273-a953-03c35a265782)
 					
 
 					
